@@ -114,6 +114,61 @@ c (q25, q75) + c (-1, 1) * 3 * q
 boxplot (X, horizontal = TRUE, ylim = range (X), xlab = "cetnost", main = "krabicovy diagram (boxplot)")
 stripchart (X, vertical = FALSE, method = "jitter", pch = 21, col = "red", bg = "yellow", cex = 1.5, add = TRUE)
 
+# Q-Q plot s R funkciami
+y <- X
+qqnorm(y)
+qqline(y, col = 2)
+
+
+# Q-Q plot polda prednasky
+# vytvoreni vektoru poradi
+r <- rank(X)   # seradime data
+rr <- factor(r)
+j <- as.numeric(levels(rr))  # zjistime hodnoty poradi
+
+# vzorecek pro alfa
+n <- length(X)
+alpha_j <- (j-.375)/(n+.25)
+
+# prislusne kvantily normalniho rozdeleni
+u_j <- qnorm(alpha_j)
+
+# vybereme data tak, aby se neopakovala
+dd <- factor(X)
+jj <- as.numeric(levels(dd))
+
+# vykreslime body
+plot(u_j,jj,pch=20,xlab="teoreticky kvantil",ylab="pozorovany kvantil",main="Q-Q plot")
+
+# body prolozime primkou
+model <- lm(jj~u_j)
+points(u_j,jj-model$residuals,type="l")
+
+
+# P-P pl# vyberova distribucni funkce
+n <- length(X)
+z <- sort((X-priemer)/odchylka)
+emp_F <- (1:n)/n
+teor_F <- pnorm(z)
+plot(z, emp_F, type='l',ylab="distribucni fce")
+lines(z, teor_F, type="l",col="red")
+legend("topleft",legend=c("Empiricka","Teoreticka"),col=c("black","red"),lty=c(1,1))
+
+# P-P plot
+plot(teor_F, emp_F, type = "p", pch = 20, main = "P-P plot")
+
+model <- lm(emp_F ~ teor_F)
+lines(teor_F, model$fitted.values, col = "red")
+
+
+
+
+
+
+
+
+
+
 
 
 
